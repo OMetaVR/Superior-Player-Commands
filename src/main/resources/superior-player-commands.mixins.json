@@ -1,0 +1,16 @@
+{
+    "required": true,
+    "package": "com.superiorplayercommands.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "mixins": [
+        "BlockBreakingMixin",
+        "BlockBreakCallbackMixin",
+        "BlockDropsMixin",
+        "PlayerHarvestCheckMixin"
+    ],
+    "client": [],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
+

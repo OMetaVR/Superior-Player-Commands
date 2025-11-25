@@ -1,16 +1,46 @@
-# Compiled class file
-*.class
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
 
-# Log file
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# IDE - Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# IDE - VS Code
+.vscode/
+
+# Minecraft/Fabric runtime
+run/
 *.log
+*.log.gz
 
-# BlueJ files
-*.ctxt
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Java
+*.class
+hs_err_pid*
+replay_pid*
 
-# Package Files #
+# Archives
 *.jar
 *.war
 *.nar
@@ -18,7 +48,3 @@
 *.zip
 *.tar.gz
 *.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*

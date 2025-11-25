@@ -1,0 +1,32 @@
+{
+    "schemaVersion": 1,
+    "id": "superior-player-commands",
+    "version": "${version}",
+    "name": "Superior Player Commands",
+    "description": "A spiritual successor to Single Player Commands - powerful utility commands for Minecraft",
+    "authors": [
+        "You"
+    ],
+    "contact": {},
+    "license": "MIT",
+    "icon": "assets/superior-player-commands/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.superiorplayercommands.SuperiorPlayerCommands"
+        ],
+        "client": [
+            "com.superiorplayercommands.SuperiorPlayerCommandsClient"
+        ]
+    },
+    "mixins": [
+        "superior-player-commands.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.15.0",
+        "minecraft": "~1.20.1",
+        "java": ">=17",
+        "fabric-api": "*"
+    }
+}
+
