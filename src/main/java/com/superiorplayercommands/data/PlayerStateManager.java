@@ -13,9 +13,10 @@ public class PlayerStateManager {
     // Instamine toggle
     private static final Map<UUID, Boolean> instamineEnabled = new ConcurrentHashMap<>();
     
-    // Instamine cooldown tracking (last break time in milliseconds)
+    // Instamine cooldown tracking
     private static final Map<UUID, Long> lastInstamineBreak = new ConcurrentHashMap<>();
-    private static final long INSTAMINE_COOLDOWN_MS = 75; // 75ms delay between instant breaks
+    private static final Map<UUID, Long> lastInstaminePos = new ConcurrentHashMap<>(); // Packed block pos
+    private static final long INSTAMINE_COOLDOWN_MS = 100; // 100ms delay between instant breaks
     
     // Drops toggle (false = drops disabled)
     private static final Map<UUID, Boolean> dropsEnabled = new ConcurrentHashMap<>();
@@ -83,20 +84,41 @@ public class PlayerStateManager {
     }
     
     /**
-     * Check if instamine is ready (cooldown passed)
+     * Check if instamine is ready for a specific block position
+     * Returns true if: mining the same block, OR first block, OR cooldown passed
      */
-    public static boolean isInstamineReady(UUID playerUuid) {
+    public static boolean isInstamineReady(UUID playerUuid, long packedPos) {
         if (!isInstamineEnabled(playerUuid)) return false;
         
+        Long lastPos = lastInstaminePos.get(playerUuid);
+        
+        // If mining the same block, always allow
+        if (lastPos != null && lastPos == packedPos) {
+            return true;
+        }
+        
+        // Different block (or first block) - check cooldown from when we LAST switched blocks
         long lastBreak = lastInstamineBreak.getOrDefault(playerUuid, 0L);
-        return System.currentTimeMillis() - lastBreak >= INSTAMINE_COOLDOWN_MS;
+        long elapsed = System.currentTimeMillis() - lastBreak;
+        boolean ready = elapsed >= INSTAMINE_COOLDOWN_MS;
+        
+        return ready;
     }
     
     /**
-     * Record an instamine break for cooldown tracking
+     * Update position tracking - call this when returning 1.0f
+     * Only records cooldown time when switching to a NEW block
      */
-    public static void recordInstamineBreak(UUID playerUuid) {
-        lastInstamineBreak.put(playerUuid, System.currentTimeMillis());
+    public static void updateInstaminePosition(UUID playerUuid, long packedPos) {
+        Long lastPos = lastInstaminePos.get(playerUuid);
+        
+        // Only start cooldown when we switch to a different block
+        if (lastPos == null || lastPos != packedPos) {
+            // We're now mining a new block - the PREVIOUS block just "broke"
+            // Start cooldown NOW for the NEXT block change
+            lastInstamineBreak.put(playerUuid, System.currentTimeMillis());
+            lastInstaminePos.put(playerUuid, packedPos);
+        }
     }
     
     // Drops
@@ -135,6 +157,7 @@ public class PlayerStateManager {
     public static void clearPlayerState(UUID playerUuid) {
         instamineEnabled.remove(playerUuid);
         lastInstamineBreak.remove(playerUuid);
+        lastInstaminePos.remove(playerUuid);
         dropsEnabled.remove(playerUuid);
         handsLevel.remove(playerUuid);
     }

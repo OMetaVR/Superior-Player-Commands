@@ -18,17 +18,20 @@ public class BlockBreakingMixin {
     
     @Inject(method = "calcBlockBreakingDelta", at = @At("HEAD"), cancellable = true)
     private void onCalcBlockBreakingDelta(BlockState state, PlayerEntity player, BlockView world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
-        // Check for instamine (with cooldown)
-        if (PlayerStateManager.isInstamineReady(player.getUuid())) {
-            // Return 1.0f = instant break (unless unbreakable)
+        // Check for instamine
+        if (PlayerStateManager.isInstamineEnabled(player.getUuid())) {
             if (state.getHardness(world, pos) >= 0) {
-                cir.setReturnValue(1.0f);
+                long packedPos = pos.asLong();
+                if (PlayerStateManager.isInstamineReady(player.getUuid(), packedPos)) {
+                    // Ready to instant break - update position tracking
+                    PlayerStateManager.updateInstaminePosition(player.getUuid(), packedPos);
+                    cir.setReturnValue(1.0f);
+                } else {
+                    // On cooldown for a NEW block - can swing but no real progress
+                    cir.setReturnValue(0.0001f);
+                }
                 return;
             }
-        } else if (PlayerStateManager.isInstamineEnabled(player.getUuid())) {
-            // Instamine enabled but on cooldown - return very slow speed to prevent breaking
-            cir.setReturnValue(0.0f);
-            return;
         }
         
         // Check for tool hands
