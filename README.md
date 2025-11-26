@@ -132,6 +132,8 @@ Create shorthand commands for longer command strings.
 
 </details>
 
+#### ~ Total Count: 29 single commands + 21 sub-commands/aliases = ~50 total commands ~
+
 ## Requirements
 
 - Minecraft 1.20.1
