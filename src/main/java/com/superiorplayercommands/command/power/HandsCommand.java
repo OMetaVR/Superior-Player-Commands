@@ -87,7 +87,6 @@ public class HandsCommand {
                 .append(Text.literal("\nUse /woodhands, /stonehands, /ironhands, /goldhands, /diamondhands, or /netheritehands")
                     .formatted(Formatting.GRAY)), false);
         } else {
-            // Disable it
             PlayerStateManager.setHandsLevel(player.getUuid(), ToolTier.NONE);
             source.sendFeedback(() -> Text.literal("Tool hands ")
                 .formatted(Formatting.YELLOW)
@@ -110,6 +109,7 @@ public class HandsCommand {
         };
     }
 }
+
 
 
 

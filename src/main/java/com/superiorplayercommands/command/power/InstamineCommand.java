@@ -30,21 +30,24 @@ public class InstamineCommand {
         ServerPlayerEntity player = source.getPlayer();
         boolean newState = PlayerStateManager.toggleInstamine(player.getUuid());
         
-        if (newState) {
-            source.sendFeedback(() -> Text.literal("Instamine ")
-                .formatted(Formatting.GREEN)
-                .append(Text.literal("enabled")
-                    .formatted(Formatting.AQUA)), false);
-        } else {
-            source.sendFeedback(() -> Text.literal("Instamine ")
-                .formatted(Formatting.YELLOW)
-                .append(Text.literal("disabled")
-                    .formatted(Formatting.GRAY)), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            if (newState) {
+                source.sendFeedback(() -> Text.literal("Instamine ")
+                    .formatted(Formatting.GREEN)
+                    .append(Text.literal("enabled")
+                        .formatted(Formatting.AQUA)), false);
+            } else {
+                source.sendFeedback(() -> Text.literal("Instamine ")
+                    .formatted(Formatting.YELLOW)
+                    .append(Text.literal("disabled")
+                        .formatted(Formatting.GRAY)), false);
+            }
         }
         
         return 1;
     }
 }
+
 
 
 

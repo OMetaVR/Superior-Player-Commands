@@ -41,18 +41,20 @@ public class MobsIgnoreCommand {
             ).forEach(mob -> mob.setTarget(null));
         }
         
-        if (newState) {
-            source.sendFeedback(() -> Text.literal("Mobs ignore ")
-                .formatted(Formatting.GREEN)
-                .append(Text.literal("enabled")
-                    .formatted(Formatting.AQUA))
-                .append(Text.literal(" - Hostile mobs will not target you")
-                    .formatted(Formatting.GRAY)), false);
-        } else {
-            source.sendFeedback(() -> Text.literal("Mobs ignore ")
-                .formatted(Formatting.YELLOW)
-                .append(Text.literal("disabled")
-                    .formatted(Formatting.GRAY)), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            if (newState) {
+                source.sendFeedback(() -> Text.literal("Mobs ignore ")
+                    .formatted(Formatting.GREEN)
+                    .append(Text.literal("enabled")
+                        .formatted(Formatting.AQUA))
+                    .append(Text.literal(" - Hostile mobs will not target you")
+                        .formatted(Formatting.GRAY)), false);
+            } else {
+                source.sendFeedback(() -> Text.literal("Mobs ignore ")
+                    .formatted(Formatting.YELLOW)
+                    .append(Text.literal("disabled")
+                        .formatted(Formatting.GRAY)), false);
+            }
         }
         
         return 1;

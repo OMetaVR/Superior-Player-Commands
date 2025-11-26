@@ -37,18 +37,20 @@ public class NoclipCommand {
         
         StateSync.sendStateUpdate(player, StateSync.STATE_NOCLIP, newState, 1.0f);
         
-        if (newState) {
-            source.sendFeedback(() -> Text.literal("Noclip ")
-                .formatted(Formatting.GREEN)
-                .append(Text.literal("enabled")
-                    .formatted(Formatting.AQUA))
-                .append(Text.literal(" - God mode and mob ignore active")
-                    .formatted(Formatting.GRAY)), false);
-        } else {
-            source.sendFeedback(() -> Text.literal("Noclip ")
-                .formatted(Formatting.YELLOW)
-                .append(Text.literal("disabled")
-                    .formatted(Formatting.GRAY)), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            if (newState) {
+                source.sendFeedback(() -> Text.literal("Noclip ")
+                    .formatted(Formatting.GREEN)
+                    .append(Text.literal("enabled")
+                        .formatted(Formatting.AQUA))
+                    .append(Text.literal(" - God mode and mob ignore active")
+                        .formatted(Formatting.GRAY)), false);
+            } else {
+                source.sendFeedback(() -> Text.literal("Noclip ")
+                    .formatted(Formatting.YELLOW)
+                    .append(Text.literal("disabled")
+                        .formatted(Formatting.GRAY)), false);
+            }
         }
         
         return 1;
@@ -71,10 +73,12 @@ public class NoclipCommand {
         
         StateSync.sendStateUpdate(player, StateSync.STATE_NOCLIP, true, speed);
         
-        source.sendFeedback(() -> Text.literal("Noclip speed set to ")
-            .formatted(Formatting.GREEN)
-            .append(Text.literal(String.format("%.1f", speed))
-                .formatted(Formatting.AQUA)), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            source.sendFeedback(() -> Text.literal("Noclip speed set to ")
+                .formatted(Formatting.GREEN)
+                .append(Text.literal(String.format("%.1f", speed))
+                    .formatted(Formatting.AQUA)), false);
+        }
         
         return 1;
     }

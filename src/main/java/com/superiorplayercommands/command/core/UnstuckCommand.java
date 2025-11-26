@@ -2,6 +2,7 @@ package com.superiorplayercommands.command.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.superiorplayercommands.data.PlayerStateManager;
 import com.superiorplayercommands.util.TeleportHelper;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -51,8 +52,10 @@ public class UnstuckCommand {
         
         TeleportHelper.teleportPlayer(player, safePos);
         
-        source.sendFeedback(() -> Text.literal("Teleported to safe position")
-            .formatted(Formatting.GREEN), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            source.sendFeedback(() -> Text.literal("Teleported to safe position")
+                .formatted(Formatting.GREEN), false);
+        }
         
         return 1;
     }

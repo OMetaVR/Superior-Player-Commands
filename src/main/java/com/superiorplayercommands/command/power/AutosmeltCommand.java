@@ -30,18 +30,20 @@ public class AutosmeltCommand {
         ServerPlayerEntity player = source.getPlayer();
         boolean newState = PlayerStateManager.toggleAutosmelt(player.getUuid());
         
-        if (newState) {
-            source.sendFeedback(() -> Text.literal("Autosmelt ")
-                .formatted(Formatting.GREEN)
-                .append(Text.literal("enabled")
-                    .formatted(Formatting.AQUA))
-                .append(Text.literal(" - Ores will drop smelted items")
-                    .formatted(Formatting.GRAY)), false);
-        } else {
-            source.sendFeedback(() -> Text.literal("Autosmelt ")
-                .formatted(Formatting.YELLOW)
-                .append(Text.literal("disabled")
-                    .formatted(Formatting.GRAY)), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            if (newState) {
+                source.sendFeedback(() -> Text.literal("Autosmelt ")
+                    .formatted(Formatting.GREEN)
+                    .append(Text.literal("enabled")
+                        .formatted(Formatting.AQUA))
+                    .append(Text.literal(" - Ores will drop smelted items")
+                        .formatted(Formatting.GRAY)), false);
+            } else {
+                source.sendFeedback(() -> Text.literal("Autosmelt ")
+                    .formatted(Formatting.YELLOW)
+                    .append(Text.literal("disabled")
+                        .formatted(Formatting.GRAY)), false);
+            }
         }
         
         return 1;

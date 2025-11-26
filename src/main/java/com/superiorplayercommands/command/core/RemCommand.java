@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.superiorplayercommands.data.PlayerStateManager;
 import com.superiorplayercommands.data.WaypointManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
@@ -11,6 +12,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.Map;
 
@@ -31,9 +33,7 @@ public class RemCommand {
         dispatcher.register(
             CommandManager.literal("rem")
                 .requires(source -> source.hasPermissionLevel(0))
-                // /rem - list all waypoints
-                .executes(RemCommand::listWaypoints)
-                // /rem <name> - remove a waypoint
+                .executes(RemCommand::executeNoArg)
                 .then(CommandManager.argument("name", StringArgumentType.word())
                     .suggests(WAYPOINT_SUGGESTIONS)
                     .executes(RemCommand::execute)
@@ -41,7 +41,7 @@ public class RemCommand {
         );
     }
     
-    private static int listWaypoints(CommandContext<ServerCommandSource> context) {
+    private static int executeNoArg(CommandContext<ServerCommandSource> context) {
         ServerCommandSource source = context.getSource();
         
         if (!source.isExecutedByPlayer()) {
@@ -50,33 +50,42 @@ public class RemCommand {
         }
         
         ServerPlayerEntity player = source.getPlayer();
+        BlockPos playerPos = player.getBlockPos();
+        String currentDimension = player.getWorld().getRegistryKey().getValue().toString();
+        
         Map<String, WaypointManager.WaypointData> waypoints = WaypointManager.getWaypoints(player.getUuid());
         
-        if (waypoints.isEmpty()) {
-            source.sendFeedback(() -> Text.literal("You have no waypoints. Use ")
-                .formatted(Formatting.GRAY)
-                .append(Text.literal("/set <name>").formatted(Formatting.YELLOW))
-                .append(Text.literal(" to create one.").formatted(Formatting.GRAY)), false);
-            return 0;
-        }
-        
-        source.sendFeedback(() -> Text.literal("=== Your Waypoints ===")
-            .formatted(Formatting.GOLD), false);
-        
         for (Map.Entry<String, WaypointManager.WaypointData> entry : waypoints.entrySet()) {
-            String name = entry.getKey();
             WaypointManager.WaypointData data = entry.getValue();
-            
-            source.sendFeedback(() -> Text.literal("  " + name)
-                .formatted(Formatting.AQUA)
-                .append(Text.literal(" → ").formatted(Formatting.GRAY))
-                .append(Text.literal(String.format("(%d, %d, %d)", data.x, data.y, data.z))
-                    .formatted(Formatting.WHITE))
-                .append(Text.literal(" [" + data.getDimensionId().getPath() + "]")
-                    .formatted(Formatting.DARK_GRAY)), false);
+            if (data.dimension.equals(currentDimension)) {
+                BlockPos waypointPos = data.getPos();
+                if (playerPos.isWithinDistance(waypointPos, 2.0)) {
+                    String name = entry.getKey();
+                    WaypointManager.removeWaypoint(player.getUuid(), name);
+                    
+                    if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+                        source.sendFeedback(() -> Text.literal("Removed waypoint '")
+                            .formatted(Formatting.YELLOW)
+                            .append(Text.literal(name).formatted(Formatting.AQUA))
+                            .append(Text.literal("'").formatted(Formatting.YELLOW)), false);
+                    }
+                    return 1;
+                }
+            }
         }
         
-        return waypoints.size();
+        source.sendFeedback(() -> Text.literal("Please specify a waypoint name: ")
+            .formatted(Formatting.YELLOW)
+            .append(Text.literal("/rem <name>").formatted(Formatting.AQUA)), false);
+        
+        if (!waypoints.isEmpty()) {
+            source.sendFeedback(() -> Text.literal("Your waypoints: ")
+                .formatted(Formatting.GRAY)
+                .append(Text.literal(String.join(", ", waypoints.keySet()))
+                    .formatted(Formatting.WHITE)), false);
+        }
+        
+        return 0;
     }
     
     private static int execute(CommandContext<ServerCommandSource> context) {
@@ -91,10 +100,12 @@ public class RemCommand {
         String name = StringArgumentType.getString(context, "name");
         
         if (WaypointManager.removeWaypoint(player.getUuid(), name)) {
-            source.sendFeedback(() -> Text.literal("Removed waypoint '")
-                .formatted(Formatting.YELLOW)
-                .append(Text.literal(name).formatted(Formatting.AQUA))
-                .append(Text.literal("'").formatted(Formatting.YELLOW)), false);
+            if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+                source.sendFeedback(() -> Text.literal("Removed waypoint '")
+                    .formatted(Formatting.YELLOW)
+                    .append(Text.literal(name).formatted(Formatting.AQUA))
+                    .append(Text.literal("'").formatted(Formatting.YELLOW)), false);
+            }
             return 1;
         } else {
             source.sendFeedback(() -> Text.literal("Waypoint '")
@@ -105,6 +116,7 @@ public class RemCommand {
         }
     }
 }
+
 
 
 

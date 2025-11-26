@@ -40,19 +40,21 @@ public class FlyCommand {
         }
         player.sendAbilitiesUpdate();
         
-        if (newState) {
-            float speed = PlayerStateManager.getFlySpeed(player.getUuid());
-            source.sendFeedback(() -> Text.literal("Flight ")
-                .formatted(Formatting.GREEN)
-                .append(Text.literal("enabled")
-                    .formatted(Formatting.AQUA))
-                .append(Text.literal(" (speed: " + String.format("%.2f", speed) + ")")
-                    .formatted(Formatting.GRAY)), false);
-        } else {
-            source.sendFeedback(() -> Text.literal("Flight ")
-                .formatted(Formatting.YELLOW)
-                .append(Text.literal("disabled")
-                    .formatted(Formatting.GRAY)), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            if (newState) {
+                float speed = PlayerStateManager.getFlySpeed(player.getUuid());
+                source.sendFeedback(() -> Text.literal("Flight ")
+                    .formatted(Formatting.GREEN)
+                    .append(Text.literal("enabled")
+                        .formatted(Formatting.AQUA))
+                    .append(Text.literal(" (speed: " + String.format("%.2f", speed) + ")")
+                        .formatted(Formatting.GRAY)), false);
+            } else {
+                source.sendFeedback(() -> Text.literal("Flight ")
+                    .formatted(Formatting.YELLOW)
+                    .append(Text.literal("disabled")
+                        .formatted(Formatting.GRAY)), false);
+            }
         }
         
         return 1;
@@ -79,10 +81,12 @@ public class FlyCommand {
             player.sendAbilitiesUpdate();
         }
         
-        source.sendFeedback(() -> Text.literal("Flight speed set to ")
-            .formatted(Formatting.GREEN)
-            .append(Text.literal(String.format("%.1f", speed))
-                .formatted(Formatting.AQUA)), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            source.sendFeedback(() -> Text.literal("Flight speed set to ")
+                .formatted(Formatting.GREEN)
+                .append(Text.literal(String.format("%.1f", speed))
+                    .formatted(Formatting.AQUA)), false);
+        }
         
         return 1;
     }

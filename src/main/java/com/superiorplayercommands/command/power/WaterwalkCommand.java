@@ -33,18 +33,20 @@ public class WaterwalkCommand {
         
         StateSync.sendStateUpdate(player, StateSync.STATE_WATERWALK, newState);
         
-        if (newState) {
-            source.sendFeedback(() -> Text.literal("Waterwalk ")
-                .formatted(Formatting.GREEN)
-                .append(Text.literal("enabled")
-                    .formatted(Formatting.AQUA))
-                .append(Text.literal(" - Walk on water and lava")
-                    .formatted(Formatting.GRAY)), false);
-        } else {
-            source.sendFeedback(() -> Text.literal("Waterwalk ")
-                .formatted(Formatting.YELLOW)
-                .append(Text.literal("disabled")
-                    .formatted(Formatting.GRAY)), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            if (newState) {
+                source.sendFeedback(() -> Text.literal("Waterwalk ")
+                    .formatted(Formatting.GREEN)
+                    .append(Text.literal("enabled")
+                        .formatted(Formatting.AQUA))
+                    .append(Text.literal(" - Walk on water and lava")
+                        .formatted(Formatting.GRAY)), false);
+            } else {
+                source.sendFeedback(() -> Text.literal("Waterwalk ")
+                    .formatted(Formatting.YELLOW)
+                    .append(Text.literal("disabled")
+                        .formatted(Formatting.GRAY)), false);
+            }
         }
         
         return 1;

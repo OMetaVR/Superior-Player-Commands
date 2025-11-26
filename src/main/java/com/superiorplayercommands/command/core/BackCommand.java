@@ -59,8 +59,10 @@ public class BackCommand {
             player.getYaw(),
             player.getPitch());
         
-        source.sendFeedback(() -> Text.literal("Returned to death location")
-            .formatted(Formatting.GREEN), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            source.sendFeedback(() -> Text.literal("Returned to death location")
+                .formatted(Formatting.GREEN), false);
+        }
         
         return 1;
     }

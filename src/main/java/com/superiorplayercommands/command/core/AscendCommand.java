@@ -2,6 +2,7 @@ package com.superiorplayercommands.command.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.superiorplayercommands.data.PlayerStateManager;
 import com.superiorplayercommands.util.TeleportHelper;
 import com.superiorplayercommands.util.TeleportHelper.LiquidType;
 import com.superiorplayercommands.util.TeleportHelper.ScanResult;
@@ -49,9 +50,11 @@ public class AscendCommand {
         
         TeleportHelper.teleportPlayer(player, result.position);
         
-        int blocksAscended = result.position.getY() - playerPos.getY();
-        source.sendFeedback(() -> Text.literal("Ascended " + blocksAscended + " blocks")
-            .formatted(Formatting.GREEN), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            int blocksAscended = result.position.getY() - playerPos.getY();
+            source.sendFeedback(() -> Text.literal("Ascended " + blocksAscended + " blocks")
+                .formatted(Formatting.GREEN), false);
+        }
         
         return 1;
     }

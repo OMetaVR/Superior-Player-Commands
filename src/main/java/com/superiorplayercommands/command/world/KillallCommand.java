@@ -86,7 +86,6 @@ public class KillallCommand {
     private static final SuggestionProvider<ServerCommandSource> TYPE_SUGGESTIONS = (context, builder) -> {
         List<String> suggestions = new ArrayList<>(GROUPS.keySet());
         suggestions.add("all");
-        // Add some common mob names
         suggestions.addAll(List.of("zombie", "skeleton", "creeper", "spider", "enderman", 
             "pig", "cow", "sheep", "chicken", "villager"));
         return CommandSource.suggestMatching(suggestions, builder);

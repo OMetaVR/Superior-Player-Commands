@@ -31,6 +31,7 @@ public class AliasManager {
         DEFAULT_ALIASES.put("gms", "gamemode survival");
         DEFAULT_ALIASES.put("gma", "gamemode adventure");
         DEFAULT_ALIASES.put("gmsp", "gamemode spectator");
+        DEFAULT_ALIASES.put("l", "listwaypoints");
     }
     
     public static void load() {

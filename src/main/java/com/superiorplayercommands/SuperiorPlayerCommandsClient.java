@@ -3,6 +3,7 @@ package com.superiorplayercommands;
 import com.superiorplayercommands.bind.BindManager;
 import com.superiorplayercommands.bind.KeyHelper;
 import com.superiorplayercommands.client.ClientStateManager;
+import com.superiorplayercommands.client.MusicControlHandler;
 import com.superiorplayercommands.network.ClientStateReceiver;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -21,6 +22,7 @@ public class SuperiorPlayerCommandsClient implements ClientModInitializer {
         BindManager.load();
         
         ClientStateReceiver.register();
+        MusicControlHandler.register();
         
         ClientTickEvents.END_CLIENT_TICK.register(this::onClientTick);
         
@@ -63,6 +65,7 @@ public class SuperiorPlayerCommandsClient implements ClientModInitializer {
         }
     }
 }
+
 
 
 

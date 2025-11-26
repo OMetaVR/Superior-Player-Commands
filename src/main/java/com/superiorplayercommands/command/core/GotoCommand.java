@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.superiorplayercommands.data.PlayerStateManager;
 import com.superiorplayercommands.data.WaypointManager;
 import com.superiorplayercommands.data.WaypointManager.WaypointData;
 import com.superiorplayercommands.util.TeleportHelper;
@@ -86,6 +87,9 @@ public class GotoCommand {
             distance = -1;
         }
         
+        PlayerStateManager.setLastTeleportPosition(player.getUuid(), player.getBlockPos(),
+            player.getWorld().getRegistryKey().getValue());
+        
         player.teleport(targetWorld, 
             targetPos.getX() + 0.5, 
             targetPos.getY(), 
@@ -93,29 +97,32 @@ public class GotoCommand {
             player.getYaw(), 
             player.getPitch());
         
-        final double finalDistance = distance;
-        if (distance >= 0) {
-            source.sendFeedback(() -> Text.literal("Teleported to '")
-                .formatted(Formatting.GREEN)
-                .append(Text.literal(name).formatted(Formatting.AQUA))
-                .append(Text.literal("' (")
-                    .formatted(Formatting.GREEN))
-                .append(Text.literal(String.format("%.1f blocks", finalDistance))
-                    .formatted(Formatting.WHITE))
-                .append(Text.literal(")").formatted(Formatting.GREEN)), false);
-        } else {
-            source.sendFeedback(() -> Text.literal("Teleported to '")
-                .formatted(Formatting.GREEN)
-                .append(Text.literal(name).formatted(Formatting.AQUA))
-                .append(Text.literal("' in ")
-                    .formatted(Formatting.GREEN))
-                .append(Text.literal(waypoint.getDimensionId().getPath())
-                    .formatted(Formatting.LIGHT_PURPLE)), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            final double finalDistance = distance;
+            if (distance >= 0) {
+                source.sendFeedback(() -> Text.literal("Teleported to '")
+                    .formatted(Formatting.GREEN)
+                    .append(Text.literal(name).formatted(Formatting.AQUA))
+                    .append(Text.literal("' (")
+                        .formatted(Formatting.GREEN))
+                    .append(Text.literal(String.format("%.1f blocks", finalDistance))
+                        .formatted(Formatting.WHITE))
+                    .append(Text.literal(")").formatted(Formatting.GREEN)), false);
+            } else {
+                source.sendFeedback(() -> Text.literal("Teleported to '")
+                    .formatted(Formatting.GREEN)
+                    .append(Text.literal(name).formatted(Formatting.AQUA))
+                    .append(Text.literal("' in ")
+                        .formatted(Formatting.GREEN))
+                    .append(Text.literal(waypoint.getDimensionId().getPath())
+                        .formatted(Formatting.LIGHT_PURPLE)), false);
+            }
         }
         
         return 1;
     }
 }
+
 
 
 

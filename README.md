@@ -1,6 +1,6 @@
 # Superior Player Commands
 
-A spiritual successor to the classic Single Player Commands mod from Minecraft Beta 1.1_02. This Fabric mod brings back those beloved utility commands with modern improvements for Minecraft 1.20.1, as well as some new/improved features!
+A spiritual successor to the classic Single Player Commands mod from Minecraft Beta 1.1_02. This Fabric mod brings back those beloved utility commands with modern improvements for Minecraft 1.20.1.
 
 ## Features
 
@@ -13,7 +13,9 @@ A spiritual successor to the classic Single Player Commands mod from Minecraft B
 | `/ascend` | Teleport to the next open space above you |
 | `/descend` | Teleport to the next open space below you |
 | `/back` | Return to your last death location |
+| `/return` | Return to your last teleport location |
 | `/unstuck` | Teleport to the nearest safe position |
+| `/useportal` | Instant nether/overworld teleport with correct coordinate scaling |
 
 </details>
 
@@ -24,7 +26,8 @@ A spiritual successor to the classic Single Player Commands mod from Minecraft B
 |---------|-------------|
 | `/set <name>` | Save your current location as a waypoint |
 | `/goto <name>` | Teleport to a saved waypoint (works cross-dimension) |
-| `/rem <name>` | Remove a waypoint |
+| `/rem <name>` | Remove a waypoint (or stand on one and use `/rem`) |
+| `/listwaypoints` | List all your waypoints (alias: `/l`) |
 
 </details>
 
@@ -38,10 +41,13 @@ A spiritual successor to the classic Single Player Commands mod from Minecraft B
 | `/saturation` | Max out hunger and saturation |
 | `/repair` | Repair the item in your hand |
 | `/repairall` | Repair all items in your inventory |
-| `/duplicate` | Duplicate the item stack in your hand |
+| `/duplicate [all] [store]` | Duplicate held item, entire inventory, or store in chest |
 | `/destroy` | Destroy the item in your hand |
-| `/more` | Max out the held item stack |
+| `/more [all]` | Max out held item stack or all stacks |
 | `/stack` | Merge partial stacks in inventory |
+| `/ench <enchantment> [level]` | Apply any enchantment at any level (bypasses restrictions) |
+| `/drop` | Drop ALL items from inventory instantly (no OP required) |
+| `/dropstore` | Store main inventory (not hotbar) in a chest placed nearby |
 
 </details>
 
@@ -60,6 +66,13 @@ A spiritual successor to the classic Single Player Commands mod from Minecraft B
 | `/waterwalk` | Walk on water and lava (sneak to sink) |
 | `/drops` | Toggle whether blocks drop items when broken |
 | `/knockback [multiplier]` | Adjust knockback strength (0-100) |
+| `/setjump <value\|reset>` | Set jump height multiplier (0.1-50) |
+| `/setspeed <value\|reset>` | Set movement speed multiplier (0.1-20) |
+| `/falldamage` | Toggle fall damage |
+| `/firedamage` | Toggle fire/lava damage |
+| `/drowndamage` | Toggle drowning damage |
+| `/health <min\|max\|infinite\|hearts>` | Set health mode or specific heart count (1-500) |
+| `/ride` | Force-mount the entity you're looking at |
 | `/hands` | Show/disable tool hands mode |
 | `/woodhands` | Mine as if holding wood tools |
 | `/stonehands` | Mine as if holding stone tools |
@@ -75,14 +88,22 @@ A spiritual successor to the classic Single Player Commands mod from Minecraft B
 
 | Command | Description |
 |---------|-------------|
+| `/explode [size] [x y z]` | Create an explosion (default: TNT size at player) |
+| `/lightning [duration] [x y z]` | Strike lightning (duration in ms for continuous strikes) |
+| `/defuse [radius\|all]` | Defuse lit TNT (default: 15 blocks) |
 | `/extinguish [radius]` | Put out fires (default: 128 blocks) |
 | `/ext [radius]` | Alias for extinguish |
 | `/snow [radius]` | Freeze water to ice, add snow (default: 32 blocks) |
 | `/thaw [radius]` | Melt ice to water, remove snow |
+| `/freeze` | Toggle AI freeze for all mobs (GMod-style) |
 | `/killall [type] [radius]` | Kill entities by type/group (default: all, 128 blocks) |
 | `/butcher [radius]` | Kill hostile mobs |
+| `/grow [radius] [type]` | Grow plants/saplings (default: 10 blocks, all types) |
+| `/spawnstack <mobs...> <count>` | Spawn stacked mobs (e.g., `/spawnstack creeper skeleton 3`) |
 
 **Killall groups:** `all`, `hostiles`, `passives`, `zombies`, `skeletons`, `undead`, `items`, `xp`, `projectiles`
+
+**Grow types:** `wheat`, `carrot`, `potato`, `beetroot`, `melon`, `pumpkin`, `sapling`, `seed`, `crop`, `all`
 
 </details>
 
@@ -93,8 +114,12 @@ A spiritual successor to the classic Single Player Commands mod from Minecraft B
 |---------|-------------|
 | `/calc <expression>` | In-game calculator |
 | `/biome` | Show current biome |
+| `/coords` | Show current coordinates and facing direction |
 | `/measure` | Distance to looked-at block |
 | `/tps` | Show server TPS and MSPT |
+| `/music <play\|pause\|skip\|back> [volume]` | Control game music |
+| `/hideresponses` | Toggle command feedback messages |
+| `/help [command]` | Show command help (alias: `/h`) |
 
 </details>
 
@@ -129,10 +154,11 @@ Create shorthand commands for longer command strings.
 | `/gms` | `/gamemode survival` |
 | `/gma` | `/gamemode adventure` |
 | `/gmsp` | `/gamemode spectator` |
+| `/l` | `/listwaypoints` |
 
 </details>
 
-#### ~ Total Count: 29 single commands + 21 sub-commands/aliases = ~50 total commands ~
+#### ~ Total Count: 59 unique commands + 6 hands variants = 65 total commands ~
 
 ## Requirements
 
@@ -164,7 +190,7 @@ Data is stored in the `config/` folder:
 
 ## Permissions
 
-Most commands require operator level 2 (`/op`). Waypoint creation (`/set`) and key bindings (`/bind`) work for all players.
+Most commands require operator level 2 (`/op`). Some commands like `/set`, `/bind`, `/drop`, `/coords`, `/music`, and `/hideresponses` work for all players.
 
 ## License
 

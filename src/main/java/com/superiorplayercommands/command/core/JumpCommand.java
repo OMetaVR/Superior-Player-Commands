@@ -2,6 +2,7 @@ package com.superiorplayercommands.command.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.superiorplayercommands.data.PlayerStateManager;
 import com.superiorplayercommands.util.TeleportHelper;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -65,8 +66,10 @@ public class JumpCommand {
         
         TeleportHelper.teleportPlayer(player, landingPos);
         
-        source.sendFeedback(() -> Text.literal("Jumped " + String.format("%.1f", distance) + " blocks")
-            .formatted(Formatting.GREEN), false);
+        if (!PlayerStateManager.isHideResponses(player.getUuid())) {
+            source.sendFeedback(() -> Text.literal("Jumped " + String.format("%.1f", distance) + " blocks")
+                .formatted(Formatting.GREEN), false);
+        }
         
         return 1;
     }

@@ -14,21 +14,23 @@ public class CommandRegistry {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             SuperiorPlayerCommands.LOGGER.info("Registering Superior Player Commands...");
             
-            // Core Commands
             JumpCommand.register(dispatcher);
             AscendCommand.register(dispatcher);
             DescendCommand.register(dispatcher);
             BackCommand.register(dispatcher);
+            ReturnCommand.register(dispatcher);
             UnstuckCommand.register(dispatcher);
             BindCommand.register(dispatcher);
             AliasCommand.register(dispatcher);
+            HideResponsesCommand.register(dispatcher);
+            UsePortalCommand.register(dispatcher);
+            HelpCommand.register(dispatcher);
             
-            // Inventory Commands
             SetCommand.register(dispatcher);
             RemCommand.register(dispatcher);
             GotoCommand.register(dispatcher);
+            ListWaypointsCommand.register(dispatcher);
             
-            // Player/Inventory Commands
             HealCommand.register(dispatcher);
             HungerCommand.register(dispatcher);
             ReplenishCommand.register(dispatcher);
@@ -37,8 +39,10 @@ public class CommandRegistry {
             DuplicateCommand.register(dispatcher);
             MoreCommand.register(dispatcher);
             StackCommand.register(dispatcher);
+            EnchCommand.register(dispatcher);
+            DropCommand.register(dispatcher);
+            DropStoreCommand.register(dispatcher);
             
-            // Power Commands
             GodCommand.register(dispatcher);
             FlyCommand.register(dispatcher);
             NoclipCommand.register(dispatcher);
@@ -50,17 +54,30 @@ public class CommandRegistry {
             WaterwalkCommand.register(dispatcher);
             KnockbackCommand.register(dispatcher);
             FullbrightCommand.register(dispatcher);
+            SetJumpCommand.register(dispatcher);
+            SetSpeedCommand.register(dispatcher);
+            FallDamageCommand.register(dispatcher);
+            FireDamageCommand.register(dispatcher);
+            DrownDamageCommand.register(dispatcher);
+            HealthCommand.register(dispatcher);
+            RideCommand.register(dispatcher);
             
-            // World Commands
             ExtinguishCommand.register(dispatcher);
             FreezeCommand.register(dispatcher);
+            FreezeAICommand.register(dispatcher);
             KillallCommand.register(dispatcher);
+            ExplodeCommand.register(dispatcher);
+            LightningCommand.register(dispatcher);
+            DefuseCommand.register(dispatcher);
+            GrowCommand.register(dispatcher);
+            SpawnStackCommand.register(dispatcher);
             
-            // Util Commands
             CalcCommand.register(dispatcher);
             BiomeCommand.register(dispatcher);
             MeasureCommand.register(dispatcher);
             TpsCommand.register(dispatcher);
+            CoordsCommand.register(dispatcher);
+            MusicCommand.register(dispatcher);
             
             SuperiorPlayerCommands.LOGGER.info("Superior Player Commands registered!");
         });

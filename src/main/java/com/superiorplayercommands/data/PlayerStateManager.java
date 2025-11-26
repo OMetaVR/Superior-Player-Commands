@@ -24,12 +24,39 @@ public class PlayerStateManager {
     private static final Map<UUID, Boolean> waterwalkEnabled = new ConcurrentHashMap<>();
     private static final Map<UUID, Float> knockbackMultiplier = new ConcurrentHashMap<>();
     private static final Map<UUID, DeathPosition> lastDeathPosition = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> hideResponses = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> dropWarningShown = new ConcurrentHashMap<>();
+    
+    // New damage toggles (true = damage enabled, default)
+    private static final Map<UUID, Boolean> fallDamageEnabled = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> fireDamageEnabled = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> drownDamageEnabled = new ConcurrentHashMap<>();
+    
+    // Movement modifiers
+    private static final Map<UUID, Float> jumpMultiplier = new ConcurrentHashMap<>();
+    private static final Map<UUID, Float> speedMultiplier = new ConcurrentHashMap<>();
+    
+    // Teleport tracking for /return
+    private static final Map<UUID, TeleportPosition> lastTeleportPosition = new ConcurrentHashMap<>();
+    
+    // Global freeze AI state
+    private static boolean freezeAI = false;
     
     public static class DeathPosition {
         public final BlockPos pos;
         public final Identifier dimension;
         
         public DeathPosition(BlockPos pos, Identifier dimension) {
+            this.pos = pos;
+            this.dimension = dimension;
+        }
+    }
+    
+    public static class TeleportPosition {
+        public final BlockPos pos;
+        public final Identifier dimension;
+        
+        public TeleportPosition(BlockPos pos, Identifier dimension) {
             this.pos = pos;
             this.dimension = dimension;
         }
@@ -268,6 +295,120 @@ public class PlayerStateManager {
         return lastDeathPosition.get(playerUuid);
     }
     
+    // Hide responses
+    public static boolean isHideResponses(UUID playerUuid) {
+        return hideResponses.getOrDefault(playerUuid, false);
+    }
+    
+    public static boolean toggleHideResponses(UUID playerUuid) {
+        boolean newState = !isHideResponses(playerUuid);
+        if (newState) {
+            hideResponses.put(playerUuid, true);
+        } else {
+            hideResponses.remove(playerUuid);
+        }
+        return newState;
+    }
+    
+    // Drop warning (persists across sessions via this being called)
+    public static boolean hasSeenDropWarning(UUID playerUuid) {
+        return dropWarningShown.getOrDefault(playerUuid, false);
+    }
+    
+    public static void setDropWarningShown(UUID playerUuid) {
+        dropWarningShown.put(playerUuid, true);
+    }
+    
+    // Fall damage
+    public static boolean isFallDamageEnabled(UUID playerUuid) {
+        return fallDamageEnabled.getOrDefault(playerUuid, true);
+    }
+    
+    public static boolean toggleFallDamage(UUID playerUuid) {
+        boolean newState = !isFallDamageEnabled(playerUuid);
+        if (newState) {
+            fallDamageEnabled.remove(playerUuid);
+        } else {
+            fallDamageEnabled.put(playerUuid, false);
+        }
+        return newState;
+    }
+    
+    // Fire damage
+    public static boolean isFireDamageEnabled(UUID playerUuid) {
+        return fireDamageEnabled.getOrDefault(playerUuid, true);
+    }
+    
+    public static boolean toggleFireDamage(UUID playerUuid) {
+        boolean newState = !isFireDamageEnabled(playerUuid);
+        if (newState) {
+            fireDamageEnabled.remove(playerUuid);
+        } else {
+            fireDamageEnabled.put(playerUuid, false);
+        }
+        return newState;
+    }
+    
+    // Drown damage
+    public static boolean isDrownDamageEnabled(UUID playerUuid) {
+        return drownDamageEnabled.getOrDefault(playerUuid, true);
+    }
+    
+    public static boolean toggleDrownDamage(UUID playerUuid) {
+        boolean newState = !isDrownDamageEnabled(playerUuid);
+        if (newState) {
+            drownDamageEnabled.remove(playerUuid);
+        } else {
+            drownDamageEnabled.put(playerUuid, false);
+        }
+        return newState;
+    }
+    
+    // Jump multiplier
+    public static float getJumpMultiplier(UUID playerUuid) {
+        return jumpMultiplier.getOrDefault(playerUuid, 1.0f);
+    }
+    
+    public static void setJumpMultiplier(UUID playerUuid, float multiplier) {
+        if (multiplier == 1.0f) {
+            jumpMultiplier.remove(playerUuid);
+        } else {
+            jumpMultiplier.put(playerUuid, multiplier);
+        }
+    }
+    
+    // Speed multiplier
+    public static float getSpeedMultiplier(UUID playerUuid) {
+        return speedMultiplier.getOrDefault(playerUuid, 1.0f);
+    }
+    
+    public static void setSpeedMultiplier(UUID playerUuid, float multiplier) {
+        if (multiplier == 1.0f) {
+            speedMultiplier.remove(playerUuid);
+        } else {
+            speedMultiplier.put(playerUuid, multiplier);
+        }
+    }
+    
+    // Teleport position tracking
+    public static TeleportPosition getLastTeleportPosition(UUID playerUuid) {
+        return lastTeleportPosition.get(playerUuid);
+    }
+    
+    public static void setLastTeleportPosition(UUID playerUuid, BlockPos pos, Identifier dimension) {
+        lastTeleportPosition.put(playerUuid, new TeleportPosition(pos, dimension));
+    }
+    
+    // Freeze AI
+    public static boolean isFreezeAI() {
+        return freezeAI;
+    }
+    
+    public static boolean toggleFreezeAI() {
+        freezeAI = !freezeAI;
+        return freezeAI;
+    }
+    
     public static void clearPlayerState(UUID playerUuid) {
         instamineEnabled.remove(playerUuid);
         lastInstamineBreak.remove(playerUuid);
@@ -282,6 +423,14 @@ public class PlayerStateManager {
         autosmeltEnabled.remove(playerUuid);
         waterwalkEnabled.remove(playerUuid);
         knockbackMultiplier.remove(playerUuid);
+        hideResponses.remove(playerUuid);
+        fallDamageEnabled.remove(playerUuid);
+        fireDamageEnabled.remove(playerUuid);
+        drownDamageEnabled.remove(playerUuid);
+        jumpMultiplier.remove(playerUuid);
+        speedMultiplier.remove(playerUuid);
+        lastTeleportPosition.remove(playerUuid);
+        // Note: dropWarningShown persists
     }
 }
 
