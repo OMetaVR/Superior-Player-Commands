@@ -1,6 +1,6 @@
 # Superior Player Commands
 
-A spiritual successor to the classic Single Player Commands mod from Minecraft Beta 1.1_02. This Fabric mod brings back those beloved utility commands with modern improvements for Minecraft 1.20.1.
+A spiritual successor to the classic Single Player Commands mod from Minecraft Beta 1.1_02. This Fabric mod brings back those beloved utility commands with modern improvements for Minecraft 1.20.1, as well as some new/improved features!
 
 ## Features
 
