@@ -195,3 +195,7 @@ Most commands require operator level 2 (`/op`). Some commands like `/set`, `/bin
 ## License
 
 Apache License 2.0 - See [LICENSE](LICENSE) for details.
+
+## Special Thanks
+
+OfficialNerdCubed - Daniel Hardcastle, unintentionally introduced me to modding and the original old beta mod!
