@@ -3,7 +3,9 @@ package com.superiorplayercommands;
 import com.superiorplayercommands.bind.BindManager;
 import com.superiorplayercommands.bind.KeyHelper;
 import com.superiorplayercommands.client.ClientStateManager;
+import com.superiorplayercommands.client.ModKeybindings;
 import com.superiorplayercommands.client.MusicControlHandler;
+import com.superiorplayercommands.config.ModConfig;
 import com.superiorplayercommands.network.ClientStateReceiver;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -19,7 +21,9 @@ public class SuperiorPlayerCommandsClient implements ClientModInitializer {
     public void onInitializeClient() {
         SuperiorPlayerCommands.LOGGER.info("Superior Player Commands client initializing...");
         
+        ModConfig.load();
         BindManager.load();
+        ModKeybindings.register();
         
         ClientStateReceiver.register();
         MusicControlHandler.register();

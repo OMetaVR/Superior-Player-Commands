@@ -19,6 +19,7 @@
         "ServerNoclipPushMixin"
     ],
     "client": [
+        "client.GameMenuScreenMixin",
         "client.MobsIgnoreClientMixin",
         "client.NoclipMixin",
         "client.NoclipPoseMixin",

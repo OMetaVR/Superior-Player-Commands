@@ -181,9 +181,25 @@ Create shorthand commands for longer command strings.
 
 The built jar will be in `build/libs/`.
 
+## Settings GUI
+
+Access the settings screen in multiple ways:
+- Press `,` (comma) key (configurable in Controls → Superior Player Commands)
+- Run `/spcsettings` command
+- Click the "SPC" button in the pause menu (top-right corner)
+
+The settings screen has three tabs:
+
+| Tab | Features |
+|-----|----------|
+| **Commands** | Master toggle, enable/disable individual commands, click category headers to toggle entire categories |
+| **Aliases** | Create, edit, and delete command aliases with a visual editor |
+| **Binds** | Create, edit, and delete key bindings with press-to-bind key capture |
+
 ## Configuration
 
 Data is stored in the `config/` folder:
+- `superior-player-commands-config.json` - Command toggles and master enable/disable
 - `superior-player-commands-waypoints.json` - Saved waypoints (per-player)
 - `superior-player-commands-binds.json` - Key bindings
 - `superior-player-commands-aliases.json` - Command aliases

@@ -14,6 +14,10 @@ public class CommandRegistry {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             SuperiorPlayerCommands.LOGGER.info("Registering Superior Player Commands...");
             
+            // Settings command (always available)
+            SettingsCommand.register(dispatcher);
+            
+            // Core commands
             JumpCommand.register(dispatcher);
             AscendCommand.register(dispatcher);
             DescendCommand.register(dispatcher);
