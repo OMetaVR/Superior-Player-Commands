@@ -35,7 +35,6 @@ public class SetCommand {
         String name = StringArgumentType.getString(context, "name");
         BlockPos pos = player.getBlockPos();
         
-        // Check if waypoint already exists
         boolean exists = WaypointManager.getWaypoint(player.getUuid(), name).isPresent();
         
         WaypointManager.setWaypoint(player.getUuid(), name, pos, player.getWorld().getRegistryKey());
@@ -51,4 +50,6 @@ public class SetCommand {
         return 1;
     }
 }
+
+
 

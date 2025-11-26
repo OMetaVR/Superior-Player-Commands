@@ -70,7 +70,6 @@ public class GotoCommand {
         WaypointData waypoint = waypointOpt.get();
         BlockPos targetPos = waypoint.getPos();
         
-        // Handle cross-dimension teleport
         RegistryKey<World> targetDimension = RegistryKey.of(RegistryKeys.WORLD, waypoint.getDimensionId());
         ServerWorld targetWorld = source.getServer().getWorld(targetDimension);
         
@@ -80,17 +79,13 @@ public class GotoCommand {
             return 0;
         }
         
-        // Store previous position for /return (TODO: implement return system)
-        
-        // Calculate distance before teleporting
         double distance;
         if (player.getWorld().getRegistryKey().equals(targetDimension)) {
             distance = Math.sqrt(player.getBlockPos().getSquaredDistance(targetPos));
         } else {
-            distance = -1; // Cross-dimension
+            distance = -1;
         }
         
-        // Teleport (handles cross-dimension)
         player.teleport(targetWorld, 
             targetPos.getX() + 0.5, 
             targetPos.getY(), 
@@ -121,4 +116,6 @@ public class GotoCommand {
         return 1;
     }
 }
+
+
 

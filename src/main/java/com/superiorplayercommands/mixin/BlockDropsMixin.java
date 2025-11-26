@@ -29,10 +29,11 @@ public class BlockDropsMixin {
         
         if (entity instanceof PlayerEntity player) {
             if (!PlayerStateManager.areDropsEnabled(player.getUuid())) {
-                // Return empty list - no drops
                 cir.setReturnValue(Collections.emptyList());
             }
         }
     }
 }
+
+
 

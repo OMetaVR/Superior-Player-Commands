@@ -74,16 +74,14 @@ public class DestroyCommand {
         ServerPlayerEntity player = source.getPlayer();
         int brokenCount = 0;
         
-        // Break all damageable items in main inventory
         for (int i = 0; i < player.getInventory().size(); i++) {
             ItemStack stack = player.getInventory().getStack(i);
             if (!stack.isEmpty() && stack.isDamageable()) {
-                stack.setDamage(stack.getMaxDamage()); // Set to max damage (broken)
+                stack.setDamage(stack.getMaxDamage());
                 brokenCount++;
             }
         }
         
-        // Break armor
         for (ItemStack armorStack : player.getArmorItems()) {
             if (!armorStack.isEmpty() && armorStack.isDamageable()) {
                 armorStack.setDamage(armorStack.getMaxDamage());
@@ -91,7 +89,6 @@ public class DestroyCommand {
             }
         }
         
-        // Break offhand
         ItemStack offhand = player.getOffHandStack();
         if (!offhand.isEmpty() && offhand.isDamageable()) {
             offhand.setDamage(offhand.getMaxDamage());
@@ -126,21 +123,18 @@ public class DestroyCommand {
         ServerPlayerEntity player = source.getPlayer();
         int clearedCount = 0;
         
-        // Count items before clearing
         for (int i = 0; i < player.getInventory().size(); i++) {
             if (!player.getInventory().getStack(i).isEmpty()) {
                 clearedCount++;
             }
         }
         
-        // Check armor
         for (ItemStack armorStack : player.getArmorItems()) {
             if (!armorStack.isEmpty()) {
                 clearedCount++;
             }
         }
         
-        // Check offhand
         if (!player.getOffHandStack().isEmpty()) {
             clearedCount++;
         }
@@ -151,7 +145,6 @@ public class DestroyCommand {
             return 0;
         }
         
-        // Clear everything
         player.getInventory().clear();
         
         final int count = clearedCount;

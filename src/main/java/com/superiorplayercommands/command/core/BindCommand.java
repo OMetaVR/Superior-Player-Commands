@@ -20,20 +20,16 @@ public class BindCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             CommandManager.literal("bind")
-                .requires(source -> source.hasPermissionLevel(0)) // TODO: configurable
-                // /bind - list all bindings
+                .requires(source -> source.hasPermissionLevel(0))
                 .executes(BindCommand::listBindings)
-                // /bind <key> - show what's bound to a key or unbind it
                 .then(CommandManager.argument("key", StringArgumentType.word())
                     .executes(BindCommand::showOrUnbind)
-                    // /bind <key> <command...> - bind a key to a command
                     .then(CommandManager.argument("command", StringArgumentType.greedyString())
                         .executes(BindCommand::setBind)
                     )
                 )
         );
         
-        // Also register /unbind for convenience
         dispatcher.register(
             CommandManager.literal("unbind")
                 .requires(source -> source.hasPermissionLevel(0))
@@ -70,7 +66,6 @@ public class BindCommand {
                 .append(Text.literal("/" + command)
                     .formatted(Formatting.WHITE));
             
-            // Add click to unbind
             line.styled(style -> style
                 .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/unbind " + key))
                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
@@ -118,7 +113,6 @@ public class BindCommand {
         String key = StringArgumentType.getString(context, "key").toLowerCase();
         String command = StringArgumentType.getString(context, "command");
         
-        // Remove leading slash if present
         if (command.startsWith("/")) {
             command = command.substring(1);
         }
@@ -157,4 +151,6 @@ public class BindCommand {
         }
     }
 }
+
+
 

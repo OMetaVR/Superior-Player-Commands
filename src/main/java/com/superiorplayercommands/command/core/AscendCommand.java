@@ -41,15 +41,11 @@ public class AscendCommand {
             return 0;
         }
         
-        // Handle liquid warnings (for now, just warn and proceed - configurable later)
         if (result.liquidFound != LiquidType.NONE) {
             String liquidName = result.liquidFound == LiquidType.LAVA ? "lava" : "water";
             source.sendFeedback(() -> Text.literal("Warning: Destination contains " + liquidName + "!")
                 .formatted(Formatting.YELLOW), false);
-            // TODO: Add configurable behavior (cancel, confirm, proceed)
         }
-        
-        // Store previous position for /return (TODO: implement return system)
         
         TeleportHelper.teleportPlayer(player, result.position);
         

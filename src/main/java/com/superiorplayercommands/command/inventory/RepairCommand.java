@@ -76,7 +76,6 @@ public class RepairCommand {
         ServerPlayerEntity player = source.getPlayer();
         int repairedCount = 0;
         
-        // Repair main inventory
         for (int i = 0; i < player.getInventory().size(); i++) {
             ItemStack stack = player.getInventory().getStack(i);
             if (!stack.isEmpty() && stack.isDamageable() && stack.getDamage() > 0) {
@@ -85,7 +84,6 @@ public class RepairCommand {
             }
         }
         
-        // Repair armor
         for (ItemStack armorStack : player.getArmorItems()) {
             if (!armorStack.isEmpty() && armorStack.isDamageable() && armorStack.getDamage() > 0) {
                 armorStack.setDamage(0);
@@ -93,7 +91,6 @@ public class RepairCommand {
             }
         }
         
-        // Repair offhand
         ItemStack offhand = player.getOffHandStack();
         if (!offhand.isEmpty() && offhand.isDamageable() && offhand.getDamage() > 0) {
             offhand.setDamage(0);
@@ -117,4 +114,6 @@ public class RepairCommand {
         return repairedCount;
     }
 }
+
+
 

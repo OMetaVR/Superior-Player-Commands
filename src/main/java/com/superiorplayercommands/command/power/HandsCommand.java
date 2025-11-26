@@ -13,7 +13,6 @@ import net.minecraft.util.Formatting;
 public class HandsCommand {
     
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        // Register each tier as a separate command
         registerTierCommand(dispatcher, "woodhands", ToolTier.WOOD);
         registerTierCommand(dispatcher, "stonehands", ToolTier.STONE);
         registerTierCommand(dispatcher, "ironhands", ToolTier.IRON);
@@ -21,7 +20,6 @@ public class HandsCommand {
         registerTierCommand(dispatcher, "diamondhands", ToolTier.DIAMOND);
         registerTierCommand(dispatcher, "netheritehands", ToolTier.NETHERITE);
         
-        // Also register /hands to show current level or disable
         dispatcher.register(
             CommandManager.literal("hands")
                 .requires(source -> source.hasPermissionLevel(2))
@@ -48,7 +46,6 @@ public class HandsCommand {
         ServerPlayerEntity player = source.getPlayer();
         ToolTier currentTier = PlayerStateManager.getHandsLevel(player.getUuid());
         
-        // If same tier, disable
         if (currentTier == tier) {
             PlayerStateManager.setHandsLevel(player.getUuid(), ToolTier.NONE);
             source.sendFeedback(() -> Text.literal("Tool hands ")
@@ -113,4 +110,6 @@ public class HandsCommand {
         };
     }
 }
+
+
 

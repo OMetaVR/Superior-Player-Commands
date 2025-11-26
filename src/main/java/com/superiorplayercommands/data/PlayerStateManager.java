@@ -1,41 +1,52 @@
 package com.superiorplayercommands.data;
 
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Manages per-player toggle states for various features
- * These are session-only (not persisted) as they are cheats
- */
 public class PlayerStateManager {
     
-    // Instamine toggle
     private static final Map<UUID, Boolean> instamineEnabled = new ConcurrentHashMap<>();
-    
-    // Instamine cooldown tracking
     private static final Map<UUID, Long> lastInstamineBreak = new ConcurrentHashMap<>();
-    private static final Map<UUID, Long> lastInstaminePos = new ConcurrentHashMap<>(); // Packed block pos
-    private static final long INSTAMINE_COOLDOWN_MS = 100; // 100ms delay between instant breaks
-    
-    // Drops toggle (false = drops disabled)
+    private static final Map<UUID, Long> lastInstaminePos = new ConcurrentHashMap<>();
+    private static final long INSTAMINE_COOLDOWN_MS = 100;
     private static final Map<UUID, Boolean> dropsEnabled = new ConcurrentHashMap<>();
-    
-    // Tool hands level (0 = disabled, 1 = wood, 2 = stone, 3 = iron, 4 = gold, 5 = diamond, 6 = netherite)
     private static final Map<UUID, Integer> handsLevel = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> godModeEnabled = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> flyEnabled = new ConcurrentHashMap<>();
+    private static final Map<UUID, Float> flySpeed = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> noclipEnabled = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> mobsIgnoreEnabled = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> autosmeltEnabled = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> waterwalkEnabled = new ConcurrentHashMap<>();
+    private static final Map<UUID, Float> knockbackMultiplier = new ConcurrentHashMap<>();
+    private static final Map<UUID, DeathPosition> lastDeathPosition = new ConcurrentHashMap<>();
+    
+    public static class DeathPosition {
+        public final BlockPos pos;
+        public final Identifier dimension;
+        
+        public DeathPosition(BlockPos pos, Identifier dimension) {
+            this.pos = pos;
+            this.dimension = dimension;
+        }
+    }
     
     public enum ToolTier {
         NONE(0, "none", 0),
         WOOD(1, "wood", 0),
         STONE(2, "stone", 1),
         IRON(3, "iron", 2),
-        GOLD(4, "gold", 0), // Gold has same harvest level as wood but faster
+        GOLD(4, "gold", 0),
         DIAMOND(5, "diamond", 3),
         NETHERITE(6, "netherite", 4);
         
         public final int level;
         public final String name;
-        public final int harvestLevel; // Minecraft harvest level
+        public final int harvestLevel;
         
         ToolTier(int level, String name, int harvestLevel) {
             this.level = level;
@@ -56,14 +67,13 @@ public class PlayerStateManager {
                 case WOOD -> 2.0f;
                 case STONE -> 4.0f;
                 case IRON -> 6.0f;
-                case GOLD -> 12.0f; // Gold is fast but weak
+                case GOLD -> 12.0f;
                 case DIAMOND -> 8.0f;
                 case NETHERITE -> 9.0f;
             };
         }
     }
     
-    // Instamine
     public static boolean isInstamineEnabled(UUID playerUuid) {
         return instamineEnabled.getOrDefault(playerUuid, false);
     }
@@ -83,21 +93,15 @@ public class PlayerStateManager {
         return newState;
     }
     
-    /**
-     * Check if instamine is ready for a specific block position
-     * Returns true if: mining the same block, OR first block, OR cooldown passed
-     */
     public static boolean isInstamineReady(UUID playerUuid, long packedPos) {
         if (!isInstamineEnabled(playerUuid)) return false;
         
         Long lastPos = lastInstaminePos.get(playerUuid);
         
-        // If mining the same block, always allow
         if (lastPos != null && lastPos == packedPos) {
             return true;
         }
         
-        // Different block (or first block) - check cooldown from when we LAST switched blocks
         long lastBreak = lastInstamineBreak.getOrDefault(playerUuid, 0L);
         long elapsed = System.currentTimeMillis() - lastBreak;
         boolean ready = elapsed >= INSTAMINE_COOLDOWN_MS;
@@ -105,30 +109,22 @@ public class PlayerStateManager {
         return ready;
     }
     
-    /**
-     * Update position tracking - call this when returning 1.0f
-     * Only records cooldown time when switching to a NEW block
-     */
     public static void updateInstaminePosition(UUID playerUuid, long packedPos) {
         Long lastPos = lastInstaminePos.get(playerUuid);
         
-        // Only start cooldown when we switch to a different block
         if (lastPos == null || lastPos != packedPos) {
-            // We're now mining a new block - the PREVIOUS block just "broke"
-            // Start cooldown NOW for the NEXT block change
             lastInstamineBreak.put(playerUuid, System.currentTimeMillis());
             lastInstaminePos.put(playerUuid, packedPos);
         }
     }
     
-    // Drops
     public static boolean areDropsEnabled(UUID playerUuid) {
-        return dropsEnabled.getOrDefault(playerUuid, true); // Default: drops enabled
+        return dropsEnabled.getOrDefault(playerUuid, true);
     }
     
     public static void setDropsEnabled(UUID playerUuid, boolean enabled) {
         if (enabled) {
-            dropsEnabled.remove(playerUuid); // Remove = default (enabled)
+            dropsEnabled.remove(playerUuid);
         } else {
             dropsEnabled.put(playerUuid, false);
         }
@@ -140,7 +136,6 @@ public class PlayerStateManager {
         return newState;
     }
     
-    // Tool hands
     public static ToolTier getHandsLevel(UUID playerUuid) {
         return ToolTier.fromLevel(handsLevel.getOrDefault(playerUuid, 0));
     }
@@ -153,13 +148,140 @@ public class PlayerStateManager {
         }
     }
     
-    // Clean up when player disconnects
+    public static boolean isGodModeEnabled(UUID playerUuid) {
+        return godModeEnabled.getOrDefault(playerUuid, false);
+    }
+    
+    public static boolean toggleGodMode(UUID playerUuid) {
+        boolean newState = !isGodModeEnabled(playerUuid);
+        if (newState) {
+            godModeEnabled.put(playerUuid, true);
+        } else {
+            godModeEnabled.remove(playerUuid);
+        }
+        return newState;
+    }
+    
+    public static boolean isFlyEnabled(UUID playerUuid) {
+        return flyEnabled.getOrDefault(playerUuid, false);
+    }
+    
+    public static void setFlyEnabled(UUID playerUuid, boolean enabled) {
+        if (enabled) {
+            flyEnabled.put(playerUuid, true);
+        } else {
+            flyEnabled.remove(playerUuid);
+        }
+    }
+    
+    public static boolean toggleFly(UUID playerUuid) {
+        boolean newState = !isFlyEnabled(playerUuid);
+        setFlyEnabled(playerUuid, newState);
+        return newState;
+    }
+    
+    public static float getFlySpeed(UUID playerUuid) {
+        return flySpeed.getOrDefault(playerUuid, 0.05f);
+    }
+    
+    public static void setFlySpeed(UUID playerUuid, float speed) {
+        flySpeed.put(playerUuid, speed);
+    }
+    
+    public static boolean isNoclipEnabled(UUID playerUuid) {
+        return noclipEnabled.getOrDefault(playerUuid, false);
+    }
+    
+    public static boolean toggleNoclip(UUID playerUuid) {
+        boolean newState = !isNoclipEnabled(playerUuid);
+        if (newState) {
+            noclipEnabled.put(playerUuid, true);
+        } else {
+            noclipEnabled.remove(playerUuid);
+        }
+        return newState;
+    }
+    
+    public static boolean isMobsIgnoreEnabled(UUID playerUuid) {
+        return mobsIgnoreEnabled.getOrDefault(playerUuid, false);
+    }
+    
+    public static boolean toggleMobsIgnore(UUID playerUuid) {
+        boolean newState = !isMobsIgnoreEnabled(playerUuid);
+        if (newState) {
+            mobsIgnoreEnabled.put(playerUuid, true);
+        } else {
+            mobsIgnoreEnabled.remove(playerUuid);
+        }
+        return newState;
+    }
+    
+    public static boolean isAutosmeltEnabled(UUID playerUuid) {
+        return autosmeltEnabled.getOrDefault(playerUuid, false);
+    }
+    
+    public static boolean toggleAutosmelt(UUID playerUuid) {
+        boolean newState = !isAutosmeltEnabled(playerUuid);
+        if (newState) {
+            autosmeltEnabled.put(playerUuid, true);
+        } else {
+            autosmeltEnabled.remove(playerUuid);
+        }
+        return newState;
+    }
+    
+    public static boolean isWaterwalkEnabled(UUID playerUuid) {
+        return waterwalkEnabled.getOrDefault(playerUuid, false);
+    }
+    
+    public static boolean toggleWaterwalk(UUID playerUuid) {
+        boolean newState = !isWaterwalkEnabled(playerUuid);
+        if (newState) {
+            waterwalkEnabled.put(playerUuid, true);
+        } else {
+            waterwalkEnabled.remove(playerUuid);
+        }
+        return newState;
+    }
+    
+    public static float getKnockbackMultiplier(UUID playerUuid) {
+        return knockbackMultiplier.getOrDefault(playerUuid, 1.0f);
+    }
+    
+    public static void setKnockbackMultiplier(UUID playerUuid, float multiplier) {
+        if (multiplier == 1.0f) {
+            knockbackMultiplier.remove(playerUuid);
+        } else {
+            knockbackMultiplier.put(playerUuid, multiplier);
+        }
+    }
+    
+    public static boolean hasKnockbackModifier(UUID playerUuid) {
+        return knockbackMultiplier.containsKey(playerUuid);
+    }
+    
+    public static void setLastDeathPosition(UUID playerUuid, BlockPos pos, Identifier dimension) {
+        lastDeathPosition.put(playerUuid, new DeathPosition(pos, dimension));
+    }
+    
+    public static DeathPosition getLastDeathPosition(UUID playerUuid) {
+        return lastDeathPosition.get(playerUuid);
+    }
+    
     public static void clearPlayerState(UUID playerUuid) {
         instamineEnabled.remove(playerUuid);
         lastInstamineBreak.remove(playerUuid);
         lastInstaminePos.remove(playerUuid);
         dropsEnabled.remove(playerUuid);
         handsLevel.remove(playerUuid);
+        godModeEnabled.remove(playerUuid);
+        flyEnabled.remove(playerUuid);
+        flySpeed.remove(playerUuid);
+        noclipEnabled.remove(playerUuid);
+        mobsIgnoreEnabled.remove(playerUuid);
+        autosmeltEnabled.remove(playerUuid);
+        waterwalkEnabled.remove(playerUuid);
+        knockbackMultiplier.remove(playerUuid);
     }
 }
 

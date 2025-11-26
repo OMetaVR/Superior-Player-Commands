@@ -37,12 +37,9 @@ public class DuplicateCommand {
             return 0;
         }
         
-        // Create a copy of the held item
         ItemStack duplicate = heldItem.copy();
         
-        // Try to add to inventory, drop if full
         if (!player.getInventory().insertStack(duplicate)) {
-            // Inventory full, drop the item
             ItemEntity itemEntity = player.dropItem(duplicate, false);
             if (itemEntity != null) {
                 itemEntity.resetPickupDelay();
@@ -68,4 +65,6 @@ public class DuplicateCommand {
         return 1;
     }
 }
+
+
 

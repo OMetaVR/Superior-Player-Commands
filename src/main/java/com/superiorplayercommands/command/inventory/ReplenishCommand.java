@@ -12,6 +12,12 @@ import net.minecraft.util.Formatting;
 public class ReplenishCommand {
     
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+            dispatcher.register(
+            CommandManager.literal("saturation")
+                .requires(source -> source.hasPermissionLevel(2))
+                .executes(ReplenishCommand::execute)
+        );
+        
         dispatcher.register(
             CommandManager.literal("replenish")
                 .requires(source -> source.hasPermissionLevel(2))
@@ -49,4 +55,6 @@ public class ReplenishCommand {
         return 1;
     }
 }
+
+
 

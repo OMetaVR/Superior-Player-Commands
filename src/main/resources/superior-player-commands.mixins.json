@@ -3,11 +3,26 @@
     "package": "com.superiorplayercommands.mixin",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
+        "AutosmeltMixin",
         "BlockBreakingMixin",
         "BlockDropsMixin",
-        "PlayerHarvestCheckMixin"
+        "DeathPositionMixin",
+        "GodModeMixin",
+        "KnockbackMixin",
+        "MobTargetMixin",
+        "MovementValidationMixin",
+        "PlayerHarvestCheckMixin",
+        "ServerNoclipMixin",
+        "ServerNoclipPoseMixin",
+        "ServerNoclipPushMixin"
     ],
-    "client": [],
+    "client": [
+        "client.MobsIgnoreClientMixin",
+        "client.NoclipMixin",
+        "client.NoclipPoseMixin",
+        "client.NoclipPushMixin",
+        "client.WaterwalkMixin"
+    ],
     "injectors": {
         "defaultRequire": 1
     }

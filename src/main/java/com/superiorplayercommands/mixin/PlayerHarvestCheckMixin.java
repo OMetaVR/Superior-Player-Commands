@@ -21,23 +21,20 @@ public class PlayerHarvestCheckMixin {
         ToolTier handsLevel = PlayerStateManager.getHandsLevel(player.getUuid());
         
         if (handsLevel == ToolTier.NONE) {
-            return; // Don't modify default behavior
+            return;
         }
         
         ItemStack heldItem = player.getMainHandStack();
         
-        // Only apply if not holding a tool
         if (!heldItem.isEmpty() && heldItem.getItem() instanceof ToolItem) {
-            return; // Let the tool handle it
+            return;
         }
         
-        // Check if the hands tier can harvest this block
         if (!state.isToolRequired()) {
             cir.setReturnValue(true);
             return;
         }
         
-        // Check harvest level requirements for various block types
         int requiredLevel = getRequiredHarvestLevel(state);
         
         if (handsLevel.harvestLevel >= requiredLevel) {
@@ -45,25 +42,19 @@ public class PlayerHarvestCheckMixin {
         }
     }
     
-    /**
-     * Get the required harvest level for a block
-     * 0 = wood/gold, 1 = stone, 2 = iron, 3 = diamond, 4 = netherite
-     */
     private int getRequiredHarvestLevel(BlockState state) {
-        // Netherite/Ancient Debris level (needs diamond+)
         if (state.isIn(BlockTags.NEEDS_DIAMOND_TOOL)) {
             return 3;
         }
-        // Diamond ore level (needs iron+)
         if (state.isIn(BlockTags.NEEDS_IRON_TOOL)) {
             return 2;
         }
-        // Iron ore level (needs stone+)
         if (state.isIn(BlockTags.NEEDS_STONE_TOOL)) {
             return 1;
         }
-        // Default - any tool works
         return 0;
     }
 }
+
+
 

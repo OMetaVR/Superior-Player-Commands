@@ -18,39 +18,31 @@ public class BlockBreakingMixin {
     
     @Inject(method = "calcBlockBreakingDelta", at = @At("HEAD"), cancellable = true)
     private void onCalcBlockBreakingDelta(BlockState state, PlayerEntity player, BlockView world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
-        // Check for instamine
         if (PlayerStateManager.isInstamineEnabled(player.getUuid())) {
             if (state.getHardness(world, pos) >= 0) {
                 long packedPos = pos.asLong();
                 if (PlayerStateManager.isInstamineReady(player.getUuid(), packedPos)) {
-                    // Ready to instant break - update position tracking
                     PlayerStateManager.updateInstaminePosition(player.getUuid(), packedPos);
                     cir.setReturnValue(1.0f);
                 } else {
-                    // On cooldown for a NEW block - can swing but no real progress
                     cir.setReturnValue(0.0001f);
                 }
                 return;
             }
         }
         
-        // Check for tool hands
         PlayerStateManager.ToolTier handsLevel = PlayerStateManager.getHandsLevel(player.getUuid());
         if (handsLevel != PlayerStateManager.ToolTier.NONE) {
             ItemStack heldItem = player.getMainHandStack();
             
-            // Only apply if not already holding a tool
             if (heldItem.isEmpty() || !(heldItem.getItem() instanceof ToolItem)) {
                 float hardness = state.getHardness(world, pos);
                 if (hardness < 0) {
-                    cir.setReturnValue(0.0f); // Unbreakable
+                    cir.setReturnValue(0.0f);
                     return;
                 }
                 
-                // Calculate mining speed based on hands level
                 float speed = handsLevel.getMiningSpeed();
-                
-                // Apply efficiency-like boost
                 float delta = speed / hardness / 30.0f;
                 cir.setReturnValue(delta);
             }

@@ -16,20 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Manages key bindings for commands
- * Stores bindings as key name -> full command string
- */
 public class BindManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path BINDS_FILE = FabricLoader.getInstance()
         .getConfigDir()
         .resolve("superior-player-commands-binds.json");
     
-    // Map of GLFW key name (lowercase) -> command string
     private static Map<String, String> bindings = new HashMap<>();
-    
-    // Track which keys are currently held to prevent repeat firing
     private static Map<String, Boolean> keyStates = new HashMap<>();
     
     public static void load() {
@@ -58,19 +51,11 @@ public class BindManager {
         }
     }
     
-    /**
-     * Add or update a binding
-     * @param key The key name (e.g., "j", "k", "f6")
-     * @param command The full command to execute (without leading slash)
-     */
     public static void setBind(String key, String command) {
         bindings.put(key.toLowerCase(), command);
         save();
     }
     
-    /**
-     * Remove a binding
-     */
     public static boolean removeBind(String key) {
         String removed = bindings.remove(key.toLowerCase());
         if (removed != null) {
@@ -80,37 +65,26 @@ public class BindManager {
         return false;
     }
     
-    /**
-     * Get the command bound to a key
-     */
     public static Optional<String> getBind(String key) {
         return Optional.ofNullable(bindings.get(key.toLowerCase()));
     }
     
-    /**
-     * Get all bindings
-     */
     public static Map<String, String> getAllBindings() {
         return new HashMap<>(bindings);
     }
     
-    /**
-     * Check if a key was just pressed (not held)
-     */
     public static boolean isKeyJustPressed(String key, boolean currentlyPressed) {
         String keyLower = key.toLowerCase();
         boolean wasPressed = keyStates.getOrDefault(keyLower, false);
         keyStates.put(keyLower, currentlyPressed);
         
-        // Return true only on the transition from not pressed to pressed
         return currentlyPressed && !wasPressed;
     }
     
-    /**
-     * Clear the pressed state for a key
-     */
     public static void clearKeyState(String key) {
         keyStates.put(key.toLowerCase(), false);
     }
 }
+
+
 

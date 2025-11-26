@@ -1,5 +1,6 @@
 package com.superiorplayercommands;
 
+import com.superiorplayercommands.alias.AliasManager;
 import com.superiorplayercommands.command.CommandRegistry;
 import com.superiorplayercommands.data.WaypointManager;
 import net.fabricmc.api.ModInitializer;
@@ -14,10 +15,9 @@ public class SuperiorPlayerCommands implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Superior Player Commands initializing...");
         
-        // Load saved data
         WaypointManager.load();
+        AliasManager.load();
         
-        // Register all commands
         CommandRegistry.registerAll();
         
         LOGGER.info("Superior Player Commands initialized!");

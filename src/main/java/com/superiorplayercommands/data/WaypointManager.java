@@ -18,24 +18,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-/**
- * Manages player waypoints
- * Stores waypoints per-player with position and dimension
- */
 public class WaypointManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path WAYPOINTS_FILE = FabricLoader.getInstance()
         .getConfigDir()
         .resolve("superior-player-commands-waypoints.json");
     
-    // Map of player UUID -> (waypoint name -> waypoint data)
     private static Map<String, Map<String, WaypointData>> playerWaypoints = new HashMap<>();
     
     public static class WaypointData {
         public int x, y, z;
         public String dimension;
         
-        public WaypointData() {} // For GSON
+        public WaypointData() {}
         
         public WaypointData(BlockPos pos, RegistryKey<World> dimension) {
             this.x = pos.getX();
@@ -80,9 +75,6 @@ public class WaypointManager {
         }
     }
     
-    /**
-     * Set a waypoint for a player
-     */
     public static void setWaypoint(UUID playerUuid, String name, BlockPos pos, RegistryKey<World> dimension) {
         String uuid = playerUuid.toString();
         playerWaypoints.computeIfAbsent(uuid, k -> new HashMap<>());
@@ -90,9 +82,6 @@ public class WaypointManager {
         save();
     }
     
-    /**
-     * Remove a waypoint for a player
-     */
     public static boolean removeWaypoint(UUID playerUuid, String name) {
         String uuid = playerUuid.toString();
         Map<String, WaypointData> waypoints = playerWaypoints.get(uuid);
@@ -106,9 +95,6 @@ public class WaypointManager {
         return false;
     }
     
-    /**
-     * Get a waypoint for a player
-     */
     public static Optional<WaypointData> getWaypoint(UUID playerUuid, String name) {
         String uuid = playerUuid.toString();
         Map<String, WaypointData> waypoints = playerWaypoints.get(uuid);
@@ -118,19 +104,15 @@ public class WaypointManager {
         return Optional.empty();
     }
     
-    /**
-     * Get all waypoints for a player
-     */
     public static Map<String, WaypointData> getWaypoints(UUID playerUuid) {
         String uuid = playerUuid.toString();
         return playerWaypoints.getOrDefault(uuid, new HashMap<>());
     }
     
-    /**
-     * Get waypoint names for a player (for tab completion)
-     */
     public static Collection<String> getWaypointNames(UUID playerUuid) {
         return getWaypoints(playerUuid).keySet();
     }
 }
+
+
 
